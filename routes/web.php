@@ -1,5 +1,7 @@
 <?php
 
+use GuzzleHttp\Middleware;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,10 +15,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::group(['middleware' => 'auth'], function() {
+    Route::get('/', 'HomeController@index')->name('index');
+    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/create', 'HomeController@index')->name('create');
+    Route::post('/store', 'HomeController@store')->name('store');
+    Route::get('/edit/{id}', 'HomeController@edit')->name('edit');
+    Route::post('/update/{id}', 'HomeController@update')->name('update');
+    Route::post('/delete/{id}', 'HomeController@delete')->name('delete');
+});
